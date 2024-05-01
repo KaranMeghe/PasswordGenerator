@@ -1,10 +1,12 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 
 function App() {
   const [length, setLength] = useState(8);
   const [numberAllowed, setNumberAllowed] = useState(false);
   const [characterAllowed, setCharacterAllowed] = useState(false);
   const [password, setPassword] = useState("");
+
+  console.log(numberAllowed);
 
   const passwordGenrator = useCallback(() => {
     let pass = "";
@@ -17,10 +19,14 @@ function App() {
 
     for (let i = 1; i <= length; i++) {
       let char = Math.floor(Math.random() * str.length + 1);
-      pass = str.charAt(char);
+      pass += str.charAt(char);
     }
     setPassword(pass);
   }, [length, numberAllowed, characterAllowed, setPassword]);
+
+  useEffect(() => {
+    passwordGenrator();
+  }, [length, numberAllowed, characterAllowed, passwordGenrator]);
 
   return (
     <main className="bg-black h-[100vh] py-8">
@@ -45,6 +51,7 @@ function App() {
               type="range"
               min={6}
               max={18}
+              value={length}
               className="cursor-pointer"
               onChange={(e) => {
                 setLength(e.target.value);
@@ -58,7 +65,7 @@ function App() {
               type="checkbox"
               defaultChecked={numberAllowed}
               id="numberInput"
-              onChange={(prev) => setNumberAllowed(!prev)}
+              onChange={() => setNumberAllowed(!numberAllowed)}
             />
             <label htmlFor="numberInput">Numbers</label>
           </div>
@@ -68,7 +75,7 @@ function App() {
               type="checkbox"
               defaultChecked={characterAllowed}
               id="charInput"
-              onChange={(prev) => setCharacterAllowed(!prev)}
+              onChange={() => setCharacterAllowed(!characterAllowed)}
             />
             <label htmlFor="charInput">Characters</label>
           </div>
